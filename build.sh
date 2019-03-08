@@ -78,7 +78,7 @@ export KBUILD_BUILD_HOST="loss"
 
 #Misc
 CONFIG=vince-perf_defconfig
-THREAD="-j4"
+THREAD="-j8"
 
 #begin functions
 makekornel()
