@@ -258,7 +258,7 @@
 		};
 		pmi8950_charger: qcom,qpnp-smbcharger {
 			qcom,iterm-ma = <200>;
-			qcom,float-voltage-mv = <4400>;
+			qcom,float-voltage-mv = <4389>;
 			qcom,resume-delta-mv = <50>;
 			/delete-property/ qcom,rparasitic-uohm;
 			qcom,rparasitics-uohm = <100000>;
@@ -269,7 +269,7 @@
 			qcom,override-usb-current;
 			qcom,thermal-mitigation = <3000 2800 2600 2300 2000 1500 0>;
 			qcom,fastchg-current-comp = <1200>;
-			qcom,float-voltage-comp = <15>;
+			qcom,float-voltage-comp = <60>;
 			qcom,autoadjust-vfloat;
 			qcom,force-aicl-rerun;
 			qcom,aicl-rerun-period-s = <180>;
