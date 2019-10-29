@@ -42,11 +42,10 @@ nc='\033[0m'
 
 #Directories
 KERNEL_DIR=$PWD
-TOOL_DIR=/home/yash/Android/tool_4
+TOOL_DIR=/home/yrahate/Android/tool_4
 PRODUCT_DIR=$KERNEL_DIR/../Output
-KERN_IMG=$PRODUCT_DIR/build/out/arch/arm64/boot/Image.gz
-DTB_T=$PRODUCT_DIR/build/out/arch/arm64/boot/dts/qcom/msm8953-qrd-sku3-vince-t.dtb
-DTB=$PRODUCT_DIR/build/out/arch/arm64/boot/dts/qcom/msm8953-qrd-sku3-vince-nt.dtb
+KERN_IMG=$PRODUCT_DIR/build/out/arch/arm64/boot/Image.gz-dtb
+DTB=$PRODUCT_DIR/build/out/arch/arm64/boot/dts/qcom/msm8953-qrd-sku3-vince.dtb
 ZIP_DIR=$PRODUCT_DIR/Zipper
 CONFIG_DIR=$KERNEL_DIR/arch/arm64/configs
 LOG_DIR=$PRODUCT_DIR/log
@@ -57,7 +56,7 @@ if [ ! -d "$PRODUCT_DIR" ]; then
   mkdir $PRODUCT_DIR
   mkdir $PRODUCT_DIR/build
   mkdir $PRODUCT_DIR/prev
-  git clone https://github.com/Ovenoboyo/zucc_zipper.git $PRODUCT_DIR/Zipper
+  mkdir $PRODUCT_DIR/Zipper
 fi
 
 #Setup toolchains
@@ -70,15 +69,16 @@ fi
 cd $KERNEL_DIR
 
 #Export
+export CROSS_COMPILE_ARM32=/home/yrahate/Android/tool_32b/bin/arm-linux-androidkernel-
 export CROSS_COMPILE=$TOOL_DIR/bin/aarch64-linux-android-
 export ARCH=arm64
 export SUBARCH=arm64
-export KBUILD_BUILD_USER="Goodboyo"
-export KBUILD_BUILD_HOST="loss"
+export KBUILD_BUILD_USER="YRAHATE"
+export KBUILD_BUILD_HOST="RYZEN"
 
 #Misc
-CONFIG=vince-perf_defconfig
-THREAD="-j8"
+CONFIG=vince_defconfig
+THREAD="-j18"
 
 #begin functions
 makekornel()
@@ -133,34 +133,19 @@ regen_def()
 clean_sauce()
 {
   rm -rf $OUT_DIR
+  rm $ZIP_DIR/zImage
+  rm $ZIP_DIR/UPDATE-AnyKernel3.zip
   echo -e "$purple(i) Kernel source cleaned up.$nc"
 }
 
 make_zip()
 {
   cd $ZIP_DIR
-  make clean &>/dev/null
-  cp $LOG_DIR/Changelog.txt $ZIP_DIR/Changelog.txt
-  cp $KERN_IMG $ZIP_DIR/kernel/Image.gz
-  cp $DTB $ZIP_DIR/non-treble/
-  cp $DTB_T $ZIP_DIR/treble/
-  make &>/dev/null
-  cd $KERNEL_DIR
+  cp $KERN_IMG $ZIP_DIR/zImage
+  zip -r9 UPDATE-AnyKernel3.zip *
   echo -e "$purple(i) Flashable zip generated under $ZIP_DIR.$nc"
 }
 
-make_zip_test()
-{
-  cd $ZIP_DIR
-  make clean &>/dev/null
-  cp $LOG_DIR/Changelog.txt $ZIP_DIR/Changelog.txt
-  cp $KERN_IMG $ZIP_DIR/kernel/Image.gz
-  cp $DTB $ZIP_DIR/non-treble/
-  cp $DTB_T $ZIP_DIR/treble/
-  make test &>/dev/null
-  cd $KERNEL_DIR
-  echo -e "$purple(i) Flashable zip (TEST) generated under $ZIP_DIR.$nc"
-}
 
 #Main script
 while true; do
@@ -168,7 +153,7 @@ echo -e "\n$green[1] Build Kernel"
 echo -e "[2] Regenerate defconfig"
 echo -e "$red[3] Source cleanup"
 echo -e "$green[4] Create flashable zip"
-echo -e "$green[5] Create flashable zip (test build)"
+echo -e "$green[5] Exit"
 echo -ne "\n$brown(i) Please enter a choice[1-6]:$nc "
 
 read choice
@@ -199,7 +184,7 @@ fi
 
 if [ "$choice" == "5" ]; then
   echo -e "\n$cyan#######################################################################$nc"
-  make_zip_test
+  exit
   echo -e "$cyan#######################################################################$nc"
 fi
 done
